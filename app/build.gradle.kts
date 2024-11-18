@@ -40,6 +40,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    //Encrypted Shared Preferences
+    implementation(libs.androidx.security.crypto.ktx)
+
+    //EMDK
+    implementation(libs.emdk)
+    implementation(libs.emdk.loader)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

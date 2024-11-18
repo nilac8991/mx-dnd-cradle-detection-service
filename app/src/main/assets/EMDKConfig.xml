@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wap-provisioningdoc>
+    <characteristic type="Profile">
+        <parm name="ProfileName" value="DNDToggle" />
+    </characteristic>
+</wap-provisioningdoc>
