@@ -71,8 +71,8 @@ class DNDToggleService : Service() {
     }
 
     private fun createServiceNotification(): Notification {
-        val channelId = "com.zebra.displaytimeouttoggle"
-        val channelName = "DTS Notification Channel"
+        val channelId = "com.nilac.zebra.dndcradledetection"
+        val channelName = "DND Toggle Channel"
 
         // Create Channel
         val notificationChannel = NotificationChannel(
