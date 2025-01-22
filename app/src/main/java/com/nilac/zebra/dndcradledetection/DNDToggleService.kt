@@ -5,16 +5,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
 import com.symbol.emdk.EMDKResults
 import com.zebra.nilac.emdkloader.EMDKLoader
 import com.zebra.nilac.emdkloader.ProfileLoader
 import com.zebra.nilac.emdkloader.interfaces.EMDKManagerInitCallBack
 import com.zebra.nilac.emdkloader.interfaces.ProfileLoaderResultCallback
+
 
 class DNDToggleService : Service() {
 
@@ -43,7 +42,7 @@ class DNDToggleService : Service() {
                     }
                     registerReceiver(receiver, filters)
 
-                    startForeground(7161, createServiceNotification())
+                    createServiceNotification()
                 }
 
                 override fun onFailed(message: String) {
@@ -56,6 +55,9 @@ class DNDToggleService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null && DISMISS_NOTIFICATION_ACTION == intent.action) {
+            createServiceNotification()
+        }
         if (!mIsServiceRunning) {
             stopSelf()
         }
@@ -70,7 +72,7 @@ class DNDToggleService : Service() {
         mIsServiceRunning = false
     }
 
-    private fun createServiceNotification(): Notification {
+    private fun createServiceNotification() {
         val channelId = "com.nilac.zebra.dndcradledetection"
         val channelName = "DND Toggle Channel"
 
@@ -92,14 +94,29 @@ class DNDToggleService : Service() {
             channelId
         )
 
+        //Dismiss Intent
+        val dismissIntent = Intent(this, DNDToggleService::class.java).apply {
+            action = DISMISS_NOTIFICATION_ACTION
+        }
+
+        val dismissPendingIntent = PendingIntent.getService(
+            this,
+            0,
+            dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         // Return Build Notification object
-        return notificationBuilder
+        val notification = notificationBuilder
             .setContentTitle("Service is active")
             .setSmallIcon(R.drawable.ic_generic_dnd)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .setPriority(NotificationManager.IMPORTANCE_MIN)
+            .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+            .setDeleteIntent(dismissPendingIntent)
             .setOngoing(true)
             .build()
+
+        startForeground(7161, notification)
     }
 
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -152,5 +169,7 @@ class DNDToggleService : Service() {
 
     companion object {
         const val TAG = "DNDToggleService"
+
+        const val DISMISS_NOTIFICATION_ACTION = "DISMISS_NOTIFICATION_ACTION"
     }
 }

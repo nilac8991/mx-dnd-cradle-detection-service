@@ -1,3 +1,5 @@
+import com.android.build.api.variant.VariantOutput
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -35,6 +37,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    androidComponents {
+        onVariants { variant ->
+            variant.outputs.forEach { output ->
+                if (output is com.android.build.api.variant.impl.VariantOutputImpl) {
+                    output.outputFileName = "app-mx-dnd-cradle-detection-release.apk"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -42,9 +54,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
-    //Encrypted Shared Preferences
-    implementation(libs.androidx.security.crypto.ktx)
 
     //EMDK
     implementation(libs.emdk)
